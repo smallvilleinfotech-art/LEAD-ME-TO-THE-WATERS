@@ -16,7 +16,7 @@ button{font-family:inherit;cursor:pointer}
 .gbtn{border:none;border-radius:12px;color:#fff;font-weight:700;letter-spacing:.5px;transition:all .2s;cursor:pointer}
 .gbtn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .gbtn:active{transform:scale(.98)}
-.gbtn:disabled{opacity:.6;cursor:not-allowed;transform:none;filter:none}
+.gbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .badge{border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700}
 .tab-btn{border:none;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;white-space:nowrap;border-bottom:3px solid transparent}
 .tab-btn.active{background:var(--primary);color:#fff;border-bottom-color:var(--gold)}
@@ -27,35 +27,19 @@ input:focus,select:focus{border-color:var(--primary)}
 .notif.show{opacity:1}
 .opt-btn{border:none;border-radius:16px;padding:16px 14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:all .3s;width:100%}
 .opt-btn:hover:not(:disabled){filter:brightness(1.12);transform:scale(1.02)}
-.speedometer{text-align:center}
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--muted);font-size:14px;gap:10px}
+.spinner{width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 tr:hover{background:#f0fff4!important}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:#f0f0f0;border-radius:10px}
 ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:10px}
-
-/* Loading overlay */
-#loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-#loading-overlay.show{display:flex}
-#loading-overlay .spinner{width:48px;height:48px;border:4px solid #c8e6c9;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-#loading-overlay p{color:var(--primary);font-weight:700;font-size:15px}
-
-/* Forgot password link */
-.forgot-link{color:var(--primary);cursor:pointer;font-size:13px;font-weight:600;text-decoration:underline;background:none;border:none;padding:0}
-.forgot-link:hover{color:var(--primaryDk)}
 </style>
 </head>
 <body>
-
-<!-- LOADING OVERLAY -->
-<div id="loading-overlay">
-  <div class="spinner"></div>
-  <p>Loading…</p>
-</div>
-
 <div class="notif" id="notif"></div>
 
-<!-- ===================== LANDING / LOGIN ===================== -->
+<!-- LANDING -->
 <div class="screen active" id="s-landing">
   <div style="max-width:460px;margin:0 auto;padding:40px 20px;text-align:center">
     <div style="font-size:64px;margin-bottom:10px">💧</div>
@@ -64,54 +48,17 @@ tr:hover{background:#f0fff4!important}
     <div style="font-size:12px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:4px;margin-bottom:20px">A Bible Community Quiz Platform</div>
     <div class="card" style="text-align:left">
       <div style="font-weight:800;font-size:18px;color:var(--primary);margin-bottom:14px">🙏 Sign In</div>
+      <div id="landing-alert" style="display:none;background:#fde8e8;border:1px solid #f5c6c6;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--danger);font-weight:600"></div>
       <div style="margin-bottom:10px"><input type="email" id="li-email" placeholder="Email address"/></div>
-      <div style="margin-bottom:8px"><input type="password" id="li-pass" placeholder="Password"/></div>
-      <div style="text-align:right;margin-bottom:16px">
-        <button class="forgot-link" onclick="goTo('s-forgot')">Forgot password?</button>
-      </div>
-      <button class="gbtn" id="li-btn" onclick="doLogin()" style="width:100%;padding:14px;font-size:16px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">Sign In →</button>
+      <div style="margin-bottom:6px"><input type="password" id="li-pass" placeholder="Password"/></div>
+      <div style="text-align:right;margin-bottom:14px"><a href="#" onclick="showForgotPassword()" style="font-size:13px;color:var(--primary);font-weight:600">Forgot password?</a></div>
+      <button class="gbtn" id="login-btn" onclick="doLogin()" style="width:100%;padding:14px;font-size:16px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">Sign In →</button>
       <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">New here? <span onclick="goTo('s-register')" style="color:var(--primary);cursor:pointer;font-weight:700">Register as Contestant</span></div>
     </div>
   </div>
 </div>
 
-<!-- ===================== FORGOT PASSWORD ===================== -->
-<div class="screen" id="s-forgot">
-  <div style="max-width:460px;margin:0 auto;padding:60px 20px;text-align:center">
-    <div style="font-size:56px;margin-bottom:10px">📧</div>
-    <div style="font-weight:900;font-size:28px;color:var(--primary);margin-bottom:6px">Forgot Password?</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Enter your email and we'll send you a recovery link.</div>
-    <div class="card" style="text-align:left">
-      <div style="margin-bottom:16px"><input type="email" id="fp-email" placeholder="Your email address"/></div>
-      <button class="gbtn" id="fp-btn" onclick="doForgotPassword()" style="width:100%;padding:14px;font-size:15px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">Send Recovery Email 📧</button>
-      <div style="text-align:center;margin-top:14px">
-        <button class="forgot-link" onclick="goTo('s-landing')">← Back to Sign In</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================== RESET PASSWORD ===================== -->
-<div class="screen" id="s-reset">
-  <div style="max-width:460px;margin:0 auto;padding:60px 20px;text-align:center">
-    <div style="font-size:56px;margin-bottom:10px">🔑</div>
-    <div style="font-weight:900;font-size:28px;color:var(--primary);margin-bottom:6px">Reset Password</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Choose a new password for your account.</div>
-    <div class="card" style="text-align:left">
-      <div style="margin-bottom:10px">
-        <label style="font-size:12px;font-weight:600;color:var(--muted)">New Password</label>
-        <input type="password" id="rp-pass" placeholder="New password (min 6 chars)" style="margin-top:4px"/>
-      </div>
-      <div style="margin-bottom:16px">
-        <label style="font-size:12px;font-weight:600;color:var(--muted)">Confirm Password</label>
-        <input type="password" id="rp-confirm" placeholder="Confirm new password" style="margin-top:4px"/>
-      </div>
-      <button class="gbtn" id="rp-btn" onclick="doResetPassword()" style="width:100%;padding:14px;font-size:16px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">Update Password ✓</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===================== REGISTER ===================== -->
+<!-- REGISTER -->
 <div class="screen" id="s-register">
   <div style="max-width:520px;margin:0 auto;padding:24px 16px">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
@@ -138,13 +85,13 @@ tr:hover{background:#f0fff4!important}
       </div>
       <div style="display:flex;gap:10px">
         <button class="gbtn" onclick="goTo('s-landing')" style="flex:1;padding:12px;background:#888">← Back</button>
-        <button class="gbtn" id="rg-btn" onclick="doRegister()" style="flex:2;padding:12px;font-size:15px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">Register Now 🙏</button>
+        <button class="gbtn" id="reg-btn" onclick="doRegister()" style="flex:2;padding:12px;font-size:15px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">Register Now 🙏</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===================== CONTESTANT DASHBOARD ===================== -->
+<!-- CONTESTANT DASHBOARD -->
 <div class="screen" id="s-contestant">
   <div style="background:linear-gradient(135deg,var(--primary),var(--primaryDk));padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
     <div style="display:flex;align-items:center;gap:8px">
@@ -166,31 +113,14 @@ tr:hover{background:#f0fff4!important}
     <button class="tab-btn" onclick="cTab('c-profile',this)">👤 Profile</button>
   </div>
   <div style="max-width:900px;margin:0 auto;padding:16px">
-    <div id="c-overview">
-      <div id="c-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px"></div>
-      <div class="card" style="margin-bottom:14px">
-        <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">📊 Performance Overview</div>
-        <div id="c-speedos" style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:16px"></div>
-      </div>
-      <div class="card" id="c-recentscores"></div>
-    </div>
-    <div id="c-quizzes" style="display:none">
-      <div style="font-weight:800;font-size:18px;color:var(--primary);margin-bottom:14px">Available Quizzes</div>
-      <div id="c-quizlist"></div>
-    </div>
-    <div id="c-leaderboard" style="display:none">
-      <div class="card">
-        <div style="font-weight:700;font-size:18px;color:var(--primary);margin-bottom:14px">🏆 Global Leaderboard</div>
-        <div id="c-lbody"></div>
-      </div>
-    </div>
-    <div id="c-profile" style="display:none">
-      <div class="card" id="c-profilebody"></div>
-    </div>
+    <div id="c-overview"></div>
+    <div id="c-quizzes" style="display:none"></div>
+    <div id="c-leaderboard" style="display:none"></div>
+    <div id="c-profile" style="display:none"></div>
   </div>
 </div>
 
-<!-- ===================== QUIZ SCREEN ===================== -->
+<!-- QUIZ SCREEN -->
 <div class="screen" id="s-quiz" style="background:linear-gradient(135deg,#0f5233,#1565C0);min-height:100vh;color:#fff">
   <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center">
     <div style="font-weight:800;font-size:15px" id="q-quizname">Quiz Name</div>
@@ -218,7 +148,7 @@ tr:hover{background:#f0fff4!important}
   </div>
 </div>
 
-<!-- ===================== QUIZ DONE ===================== -->
+<!-- QUIZ DONE -->
 <div class="screen" id="s-quizdone" style="background:linear-gradient(135deg,#0f5233,#1565C0);min-height:100vh;color:#fff;display:none">
   <div style="max-width:500px;margin:0 auto;padding:40px 20px;text-align:center">
     <div id="qd-icon" style="font-size:72px;margin-bottom:14px">🏆</div>
@@ -231,7 +161,7 @@ tr:hover{background:#f0fff4!important}
   </div>
 </div>
 
-<!-- ===================== ADMIN PANEL ===================== -->
+<!-- ADMIN PANEL -->
 <div class="screen" id="s-admin">
   <div style="background:linear-gradient(135deg,#0a3d2b,#0f5233);padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
     <div style="display:flex;align-items:center;gap:8px">
@@ -265,357 +195,79 @@ tr:hover{background:#f0fff4!important}
 </div>
 
 <script>
-// =========================================================
-// ===================== CONFIGURATION =====================
-// =========================================================
-// ⚠️  REPLACE THESE with your actual Supabase project values
-// Found at: https://supabase.com/dashboard → Your Project → Settings → API
-const SUPABASE_URL  = 'https://ummncpnlqaainjlxkpmw.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtbW5jcG5scWFhaW5qbHhrcG13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTUwNTQsImV4cCI6MjA5NTM5MTA1NH0.ziWHJaRUcSJVVdHPvPRiq1uIPz0eQQYG07BvZSrllLA';
+// ============================================================
+// SUPABASE CONFIG — replace with your actual anon key
+// ============================================================
+const SUPABASE_URL = 'https://ummncpnlqaainjlxkpmw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtbW5jcG5scWFhaW5qbHhrcG13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTUwNTQsImV4cCI6MjA5NTM5MTA1NH0.ziWHJaRUcSJVVdHPvPRiq1uIPz0eQQYG07BvZSrllLA'; // ← paste from Supabase > Settings > API
 
-// =========================================================
-// =================== SUPABASE CLIENT =====================
-// =========================================================
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+const { createClient } = window.supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// =========================================================
-// ========================= DATA ==========================
-// =========================================================
-// Local quiz data (quizzes are not stored in Supabase in this version)
-let quizzes = [
-  {id:1,name:"Major Quiz 1 - Book of John",questions:[
-    {id:1,text:"Who led the Israelites out of Egypt?",options:["Abraham","Moses","David","Joshua"],correct:1,time:20,points:1000},
-    {id:2,text:"How many days did God take to create the world?",options:["5 days","6 days","7 days","10 days"],correct:1,time:15,points:1000},
-    {id:3,text:"What was the garden where Adam and Eve lived?",options:["Garden of Gethsemane","Garden of Eden","Garden of Olives","Paradise Garden"],correct:1,time:20,points:1000},
-    {id:4,text:"Which psalm begins 'The Lord is my shepherd'?",options:["Psalm 22","Psalm 91","Psalm 23","Psalm 1"],correct:2,time:20,points:1000},
-    {id:5,text:"How many books are in the New Testament?",options:["27","39","66","24"],correct:0,time:15,points:1000}
-  ],type:"major",status:"completed",date:"2024-05-15",host:"Admin"},
-  {id:2,name:"Daily Devotional - May",questions:[
-    {id:1,text:"What does John 3:16 teach us?",options:["God's love for the world","The Ten Commandments","The Sermon on the Mount","The Lord's Prayer"],correct:0,time:15,points:500},
-    {id:2,text:"'I can do all things through _____ who strengthens me'",options:["Moses","David","Christ","The Holy Spirit"],correct:2,time:20,points:500},
-    {id:3,text:"Which fruit of the Spirit comes first in Galatians 5:22?",options:["Peace","Love","Joy","Kindness"],correct:1,time:15,points:500}
-  ],type:"devotional",status:"completed",date:"2024-05-20",host:"Admin"}
-];
-
-// In-memory user profiles cache (loaded from Supabase profiles table)
-// Structure: { id, name, email, phone, role, status, flagged, bank:{name,bankName,accountNumber}, scores:[], totalScore, joinDate }
-let usersCache = [];
-let currentUser = null;
-let activeQuiz   = null;
-let quizState    = null;
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;   // profile row from DB
+let activeQuiz = null;    // quiz object being played
+let quizState = null;
 let timerInterval = null;
-let adminCharts  = {};
+let adminCharts = {};
 
-// =========================================================
-// ======================== UTILS ==========================
-// =========================================================
-function notify(msg, type="success") {
+const OPT_COLORS = ["#e53935","#1565C0","#2e7d32","#F9A825"];
+const OPT_ICONS  = ["◆","●","▲","★"];
+
+// ============================================================
+// UTILS
+// ============================================================
+function notify(msg, type="success"){
   const el = document.getElementById('notif');
   el.textContent = msg;
-  el.style.background = type==="error" ? "#C62828" : type==="warning" ? "#F57F17" : "#2e7d32";
+  el.style.background = type==="error"?"#C62828":type==="warning"?"#F57F17":"#2e7d32";
   el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'), 3200);
+  setTimeout(()=>el.classList.remove('show'), 3400);
 }
-
-function goTo(id) {
+function showAlert(elId, msg){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideAlert(elId){
+  const el = document.getElementById(elId);
+  if(el) el.style.display = 'none';
+}
+function setLoading(btnId, loading, text=""){
+  const btn = document.getElementById(btnId);
+  if(!btn) return;
+  btn.disabled = loading;
+  if(text) btn.textContent = loading ? "⏳ Please wait..." : text;
+}
+function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='';});
   const el = document.getElementById(id);
   el.classList.add('active');
   if(id==='s-quizdone') el.style.display='block';
 }
-
-function setLoading(show, msg="Loading2026") {
-  const el = document.getElementById('loading-overlay');
-  if(el) { el.style.display = show ? 'flex' : 'none'; if(show) el.querySelector('p').textContent=msg; }
+function loadingHtml(msg="Loading..."){
+  return `<div class="loading"><div class="spinner"></div>${msg}</div>`;
 }
-
-function setBtnLoading(btnId, loading, label="") {
-  const btn = document.getElementById(btnId);
-  if(!btn) return;
-  btn.disabled = loading;
-  if(loading) { btn._origText = btn.textContent; btn.textContent = "Please wait…"; }
-  else btn.textContent = label || btn._origText || btn.textContent;
-}
-
-// =========================================================
-// ================ SUPABASE AUTH LISTENER =================
-// =========================================================
-sb.auth.onAuthStateChange(async (event, session) => {
-  console.log('Auth event:', event, session ? 'has session' : 'no session');
-
-  if (event === 'PASSWORD_RECOVERY') {
-    setLoading(false);
-    goTo('s-reset');
-    return;
-  }
-
-  if (event === 'SIGNED_IN' && session) {
-    await loadAndRouteUser(session.user);
-    return;
-  }
-
-  if (event === 'SIGNED_OUT') {
-    currentUser = null;
-    setLoading(false);
-    goTo('s-landing');
-    return;
-  }
-
-  if (event === 'INITIAL_SESSION') {
-    if (session) {
-      // Already logged in (e.g. returning user with valid token)
-      await loadAndRouteUser(session.user);
-    } else {
-      // No session — show login
-      setLoading(false);
-      goTo('s-landing');
-    }
-    return;
-  }
-
-  // Fallback: hide loader and show login for any unhandled event
-  setLoading(false);
-  goTo('s-landing');
-});
-
-// Hard safety fallback: if nothing fires within 5s, show login anyway
-setTimeout(() => {
-  const overlay = document.getElementById('loading-overlay');
-  if (overlay && overlay.classList.contains('show')) {
-    console.warn('Auth timeout fallback triggered');
-    setLoading(false);
-    goTo('s-landing');
-  }
-}, 5000);
-
-// =========================================================
-// ================= LOAD PROFILE & ROUTE ==================
-// =========================================================
-async function loadAndRouteUser(authUser) {
-  setLoading(true, "Loading your profile…");
-  try {
-    const { data: profile, error } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('id', authUser.id)
-      .single();
-
-    if (error || !profile) {
-      // Profile not found — might be new registration still processing
-      setLoading(false);
-      notify("Profile not found. Please contact admin.", "error");
-      await sb.auth.signOut();
-      goTo('s-landing');
-      return;
-    }
-
-    if (profile.status === 'pending') {
-      setLoading(false);
-      notify("Your account is pending admin approval. 🙏", "warning");
-      await sb.auth.signOut();
-      goTo('s-landing');
-      return;
-    }
-
-    // Parse scores JSON if stored as text
-    let scores = profile.scores || [];
-    if (typeof scores === 'string') { try { scores = JSON.parse(scores); } catch(e){ scores=[]; } }
-
-    currentUser = {
-      id:         profile.id,
-      name:       profile.name || authUser.email,
-      email:      authUser.email,
-      phone:      profile.phone || '',
-      role:       profile.role || 'contestant',
-      status:     profile.status || 'approved',
-      flagged:    profile.flagged || false,
-      bank: {
-        name:          profile.bank_account_name || '',
-        bankName:       profile.bank_name || '',
-        accountNumber: profile.account_number || ''
-      },
-      scores:     scores,
-      totalScore: profile.total_score || 0,
-      joinDate:   (profile.created_at || '').split('T')[0]
-    };
-
-    // Refresh users cache (for leaderboard etc.)
-    await refreshUsersCache();
-
-    setLoading(false);
-    if (currentUser.role === 'admin') {
-      goTo('s-admin');
-      renderAdminDashboard();
-    } else {
-      goTo('s-contestant');
-      renderContestantOverview();
-    }
-    notify(`Welcome back, ${currentUser.name}! 🙏`);
-
-  } catch(err) {
-    setLoading(false);
-    console.error(err);
-    notify("Failed to load profile. Try again.", "error");
-    goTo('s-landing');
-  }
-}
-
-async function refreshUsersCache() {
-  try {
-    const { data, error } = await sb.from('profiles').select('*');
-    if (!error && data) {
-      usersCache = data.map(p => {
-        let scores = p.scores || [];
-        if (typeof scores === 'string') { try { scores = JSON.parse(scores); } catch(e){ scores=[]; } }
-        return {
-          id:         p.id,
-          name:       p.name || '',
-          email:      p.email || '',
-          phone:      p.phone || '',
-          role:       p.role || 'contestant',
-          status:     p.status || 'pending',
-          flagged:    p.flagged || false,
-          bank: {
-            name:          p.bank_account_name || '',
-            bankName:       p.bank_name || '',
-            accountNumber: p.account_number || ''
-          },
-          scores,
-          totalScore: p.total_score || 0,
-          joinDate:   (p.created_at || '').split('T')[0]
-        };
-      });
-    }
-  } catch(e) { console.error('Cache refresh error:', e); }
-}
-
-// =========================================================
-// ======================== AUTH ===========================
-// =========================================================
-async function doLogin() {
-  const email = document.getElementById('li-email').value.trim();
-  const pass  = document.getElementById('li-pass').value;
-  if (!email || !pass) return notify("Please enter email and password.", "error");
-
-  setBtnLoading('li-btn', true);
-  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-  setBtnLoading('li-btn', false, 'Sign In →');
-  if (error) notify(error.message, "error");
-  // On success, onAuthStateChange(SIGNED_IN) handles routing
-}
-
-async function doLogout() {
-  await sb.auth.signOut();
-  // onAuthStateChange(SIGNED_OUT) handles UI
-}
-
-async function doRegister() {
-  const name  = document.getElementById('rg-name').value.trim();
-  const email = document.getElementById('rg-email').value.trim();
-  const pass  = document.getElementById('rg-pass').value;
-  const phone = document.getElementById('rg-phone').value.trim();
-  const bname = document.getElementById('rg-bname').value.trim();
-  const bank  = document.getElementById('rg-bank').value.trim();
-  const acct  = document.getElementById('rg-acct').value.trim();
-
-  if (!name||!email||!pass||!phone||!bname||!bank||!acct)
-    return notify("Please fill all fields.", "error");
-  if (pass.length < 6)
-    return notify("Password must be at least 6 characters.", "error");
-
-  setBtnLoading('rg-btn', true);
-
-  // 1. Create auth user
-  const { data: authData, error: signUpError } = await sb.auth.signUp({ email, password: pass });
-  if (signUpError) { setBtnLoading('rg-btn', false, 'Register Now 🙏'); return notify(signUpError.message, "error"); }
-
-  const uid = authData?.user?.id;
-  if (!uid) { setBtnLoading('rg-btn', false, 'Register Now 🙏'); return notify("Registration failed. Try again.", "error"); }
-
-  // 2. Create profile row
-  const { error: profileError } = await sb.from('profiles').insert({
-    id: uid,
-    name,
-    email,
-    phone,
-    role: 'contestant',
-    status: 'pending',
-    flagged: false,
-    bank_account_name: bname,
-    bank_name: bank,
-    account_number: acct,
-    scores: [],
-    total_score: 0
-  });
-
-  setBtnLoading('rg-btn', false, 'Register Now 🙏');
-  if (profileError) {
-    notify("Profile creation failed: " + profileError.message, "error");
-    return;
-  }
-
-  // Sign them out immediately — they need admin approval
-  await sb.auth.signOut();
-  notify("Registration successful! Awaiting admin approval 🎉");
-  goTo('s-landing');
-}
-
-async function doForgotPassword() {
-  const email = document.getElementById('fp-email').value.trim();
-  if (!email) return notify("Please enter your email.", "error");
-
-  setBtnLoading('fp-btn', true);
-  const redirectTo = 'https://smallvilleinfotech-art.github.io/LEAD-ME-TO-THE-WATERS/';
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
-  setBtnLoading('fp-btn', false, 'Send Recovery Email 📧');
-
-  if (error) notify(error.message, "error");
-  else {
-    notify("Recovery email sent! Check your inbox. 📧");
-    goTo('s-landing');
-  }
-}
-
-async function doResetPassword() {
-  const pass    = document.getElementById('rp-pass').value;
-  const confirm = document.getElementById('rp-confirm').value;
-
-  if (!pass || pass.length < 6) return notify("Password must be at least 6 characters.", "error");
-  if (pass !== confirm)         return notify("Passwords do not match.", "error");
-
-  setBtnLoading('rp-btn', true);
-  const { error } = await sb.auth.updateUser({ password: pass });
-  setBtnLoading('rp-btn', false, 'Update Password ✓');
-
-  if (error) { notify(error.message, "error"); return; }
-
-  notify("Password updated successfully! Please sign in. 🎉");
-  await sb.auth.signOut();
-  goTo('s-landing');
-}
-
-// =========================================================
-// ================= NAVIGATION HELPERS ====================
-// =========================================================
-function cTab(id, btn) {
+function cTab(id, btn){
   ['c-overview','c-quizzes','c-leaderboard','c-profile'].forEach(t=>{
     const el=document.getElementById(t); if(el) el.style.display='none';
   });
-  document.getElementById(id).style.display = 'block';
+  document.getElementById(id).style.display='block';
   document.querySelectorAll('#s-contestant .tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  if(id==='c-overview')    renderContestantOverview();
-  if(id==='c-quizzes')     renderContestantQuizzes();
-  if(id==='c-leaderboard') renderContestantLeaderboard();
-  if(id==='c-profile')     renderContestantProfile();
+  if(id==='c-overview')   renderContestantOverview();
+  if(id==='c-quizzes')    renderContestantQuizzes();
+  if(id==='c-leaderboard')renderContestantLeaderboard();
+  if(id==='c-profile')    renderContestantProfile();
 }
-
-function aTab(id, btn) {
+function aTab(id, btn){
   ['a-dashboard','a-users','a-quizzes','a-leaderboard','a-reports','a-bank'].forEach(t=>{
     const el=document.getElementById(t); if(el) el.style.display='none';
   });
-  document.getElementById(id).style.display = 'block';
+  document.getElementById(id).style.display='block';
   document.querySelectorAll('#s-admin .tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   if(id==='a-dashboard')  renderAdminDashboard();
@@ -626,29 +278,167 @@ function aTab(id, btn) {
   if(id==='a-bank')       renderAdminBank();
 }
 
-// =========================================================
-// ================== HELPER FUNCTIONS =====================
-// =========================================================
-function getLeaderboard() {
-  return usersCache.filter(u=>u.role==='contestant'&&u.status==='approved').sort((a,b)=>b.totalScore-a.totalScore);
-}
-function getApproved() { return usersCache.filter(u=>u.role==='contestant'&&u.status==='approved'); }
-function getPending()  { return usersCache.filter(u=>u.role==='contestant'&&u.status==='pending');  }
-function getFlagged()  { return usersCache.filter(u=>u.flagged); }
+// ============================================================
+// AUTH STATE — central handler, runs on page load + every change
+// ============================================================
+db.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    if (currentUser) return; // already loaded, don't loop
+    await loadUserProfile(session.user.id);
+  } else if (event === 'SIGNED_OUT') {
+    currentUser = null;
+    goTo('s-landing');
+  }
+});
 
-// =========================================================
-// ==================== SPEEDO SVG =========================
-// =========================================================
-function makeSpeedo(value, max, label, color) {
-  const pct = Math.min(100, value/max*100);
-  const toRad = d => d*Math.PI/180;
-  const startDeg=-135, endDeg=135, sweepDeg=270;
+async function loadUserProfile(userId){
+  const { data: profile, error } = await db
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .maybeSingle();  // returns null (not error) if row missing
+
+  if (error) {
+    // 500 = likely RLS issue — DO NOT sign out, just inform
+    showAlert('landing-alert', '⚠️ Profile error. Please contact admin. (Code: DB_500)');
+    console.error('Profile fetch error:', error);
+    return;
+  }
+  if (!profile) {
+    showAlert('landing-alert', '⚠️ Profile not found. Please contact admin.');
+    return;
+  }
+  if (profile.status === 'pending') {
+    notify('Your account is pending admin approval', 'warning');
+    await db.auth.signOut();
+    return;
+  }
+
+  currentUser = profile;
+  hideAlert('landing-alert');
+  if (profile.role === 'admin') {
+    goTo('s-admin');
+    renderAdminDashboard();
+  } else {
+    goTo('s-contestant');
+    renderContestantOverview();
+  }
+  notify(`Welcome back, ${profile.name}! 🙏`);
+}
+
+// ============================================================
+// AUTH ACTIONS
+// ============================================================
+async function doLogin(){
+  const email = document.getElementById('li-email').value.trim();
+  const pass  = document.getElementById('li-pass').value;
+  if (!email || !pass) return showAlert('landing-alert','Please enter your email and password.');
+  hideAlert('landing-alert');
+  setLoading('login-btn', true, 'Sign In →');
+  const { error } = await db.auth.signInWithPassword({ email, password: pass });
+  setLoading('login-btn', false, 'Sign In →');
+  if (error) showAlert('landing-alert', error.message);
+}
+
+async function doLogout(){
+  currentUser = null;
+  if(timerInterval) clearInterval(timerInterval);
+  await db.auth.signOut();
+}
+
+async function doRegister(){
+  const name  = document.getElementById('rg-name').value.trim();
+  const email = document.getElementById('rg-email').value.trim();
+  const pass  = document.getElementById('rg-pass').value;
+  const phone = document.getElementById('rg-phone').value.trim();
+  const bname = document.getElementById('rg-bname').value.trim();
+  const bank  = document.getElementById('rg-bank').value.trim();
+  const acct  = document.getElementById('rg-acct').value.trim();
+
+  if (!name||!email||!pass||!phone||!bname||!bank||!acct)
+    return notify('Please fill all fields', 'error');
+
+  setLoading('reg-btn', true, 'Register Now 🙏');
+
+  // 1. Check if email already exists in profiles
+  const { data: existing } = await db
+    .from('profiles').select('id').eq('email', email).maybeSingle();
+  if (existing) {
+    // Flag the duplicate attempt by updating flagged=true on existing row
+    await db.from('profiles').update({ flagged: true }).eq('email', email);
+    setLoading('reg-btn', false, 'Register Now 🙏');
+    return notify('⚠️ Email already registered. Admin notified.', 'error');
+  }
+
+  // 2. Create Supabase Auth user
+  const { data: authData, error: authErr } = await db.auth.signUp({ email, password: pass });
+  if (authErr) {
+    setLoading('reg-btn', false, 'Register Now 🙏');
+    return notify(authErr.message, 'error');
+  }
+
+  const userId = authData.user?.id;
+  if (!userId) {
+    setLoading('reg-btn', false, 'Register Now 🙏');
+    return notify('Registration failed. Try again.', 'error');
+  }
+
+  // 3. Insert profile row
+  const { error: profileErr } = await db.from('profiles').insert({
+    id: userId,
+    name,
+    email,
+    phone,
+    role: 'contestant',
+    status: 'pending',
+    total_score: 0,
+    join_date: new Date().toISOString().split('T')[0],
+    flagged: false,
+    bank_account_name: bname,
+    bank_name: bank,
+    bank_account_number: acct
+  });
+
+  setLoading('reg-btn', false, 'Register Now 🙏');
+
+  if (profileErr) {
+    console.error('Profile insert error:', profileErr);
+    return notify('Account created but profile setup failed. Contact admin.', 'error');
+  }
+
+  // Sign out immediately — need admin approval first
+  await db.auth.signOut();
+  notify('Registration successful! Awaiting admin approval 🎉');
+  goTo('s-landing');
+}
+
+function showForgotPassword(){
+  const email = document.getElementById('li-email').value.trim();
+  if (!email) {
+    showAlert('landing-alert','Enter your email above, then click Forgot Password again.');
+    return;
+  }
+  db.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href
+  }).then(({ error }) => {
+    if (error) return showAlert('landing-alert', error.message);
+    notify('Password reset email sent! Check your inbox.', 'success');
+  });
+}
+
+// ============================================================
+// SPEEDO SVG
+// ============================================================
+function makeSpeedo(value, max, label, color){
+  const pct = Math.min(100, value / Math.max(max,1) * 100);
+  const toRad = d => d * Math.PI / 180;
   const cx=60, cy=60, r=45;
-  function arcPt(deg){return{x:cx+r*Math.cos(toRad(deg)),y:cy+r*Math.sin(toRad(deg))};}
-  const s=arcPt(startDeg), e0=arcPt(endDeg);
-  const fillAngle = startDeg+(pct/100)*sweepDeg;
+  const startDeg=-135, sweepDeg=270;
+  const arcPt = deg => ({ x: cx+r*Math.cos(toRad(deg)), y: cy+r*Math.sin(toRad(deg)) });
+  const s=arcPt(startDeg), e0=arcPt(startDeg+sweepDeg);
+  const fillAngle = startDeg + (pct/100)*sweepDeg;
   const ef = arcPt(fillAngle);
-  const large = pct>50?1:0;
+  const large = pct > 50 ? 1 : 0;
   const nx = cx+r*0.7*Math.cos(toRad(fillAngle));
   const ny = cy+r*0.7*Math.sin(toRad(fillAngle));
   return `<div style="text-align:center">
@@ -663,153 +453,199 @@ function makeSpeedo(value, max, label, color) {
   </div>`;
 }
 
-// =========================================================
-// ================ CONTESTANT SCREENS =====================
-// =========================================================
-function renderContestantOverview() {
-  const u = currentUser;
-  document.getElementById('c-username').textContent = u.name;
-  const lb = getLeaderboard();
-  const myRank = lb.findIndex(x=>x.id===u.id)+1;
-  const acc = u.scores.length>0 ? Math.round((u.totalScore/(u.scores.length*1000))*100) : 0;
+// ============================================================
+// CONTESTANT SCREENS
+// ============================================================
+async function renderContestantOverview(){
+  const el = document.getElementById('c-overview');
+  el.innerHTML = loadingHtml('Loading your stats...');
+  document.getElementById('c-username').textContent = currentUser.name;
 
-  document.getElementById('c-stats').innerHTML=[
-    ['🏆 Total Score', u.totalScore.toLocaleString(), '#F9A825'],
-    ['🎯 My Rank', myRank>0?`#${myRank}`:'—', 'var(--primary)'],
-    ['📖 Quizzes Taken', u.scores.length, 'var(--secondary)'],
-    ['✅ Accuracy', acc+'%', 'var(--teal)']
-  ].map(([l,v,c])=>`<div class="card" style="text-align:center;border-top:4px solid ${c}">
-    <div style="font-size:12px;color:var(--muted);font-weight:600">${l}</div>
-    <div style="font-size:26px;font-weight:800;color:${c}">${v}</div>
-  </div>`).join('');
+  // Fetch this user's scores
+  const { data: scores } = await db
+    .from('scores')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('played_at', { ascending: false });
 
-  document.getElementById('c-speedos').innerHTML =
-    makeSpeedo(acc, 100, 'Accuracy', 'var(--primary)') +
-    makeSpeedo(myRank>0?Math.max(0,Math.round((1-myRank/lb.length)*100)):0, 100, 'Rank Score', 'var(--secondary)') +
-    makeSpeedo(u.scores.length, Math.max(5,quizzes.length), 'Participation', '#F9A825');
+  // Fetch leaderboard (top positions)
+  const { data: lb } = await db
+    .from('profiles')
+    .select('id, total_score')
+    .eq('role', 'contestant')
+    .eq('status', 'approved')
+    .order('total_score', { ascending: false });
 
-  const rs = document.getElementById('c-recentscores');
-  if (u.scores.length===0) { rs.innerHTML='<div style="color:var(--muted);font-size:14px">No quiz scores yet. Play a quiz to get started! 🎯</div>'; return; }
-  rs.innerHTML=`<div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">📈 Recent Scores</div>`+
-    u.scores.slice(-5).reverse().map((s,i,arr)=>`
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;${i<arr.length-1?'border-bottom:1px solid var(--border)':''}">
-        <div><div style="font-weight:600;font-size:14px">${s.quiz}</div><div style="font-size:12px;color:var(--muted)">${s.date}</div></div>
-        <span class="badge" style="background:${s.score>800?'#e8f5e9':'#e3f2fd'};color:${s.score>800?'var(--primary)':'var(--secondary)'}">${s.score.toLocaleString()} pts</span>
+  const myRank = lb ? lb.findIndex(u => u.id === currentUser.id) + 1 : 0;
+  const totalScore = currentUser.total_score || 0;
+  const quizCount  = scores?.length || 0;
+  const acc = quizCount > 0 ? Math.round((totalScore / (quizCount * 1000)) * 100) : 0;
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px">
+      ${[['🏆 Total Score', totalScore.toLocaleString(), '#F9A825'],
+         ['🎯 My Rank', myRank > 0 ? `#${myRank}` : '—', 'var(--primary)'],
+         ['📖 Quizzes Taken', quizCount, 'var(--secondary)'],
+         ['✅ Accuracy', acc + '%', 'var(--teal)']
+        ].map(([l,v,c]) => `<div class="card" style="text-align:center;border-top:4px solid ${c}">
+          <div style="font-size:12px;color:var(--muted);font-weight:600">${l}</div>
+          <div style="font-size:26px;font-weight:800;color:${c}">${v}</div>
+        </div>`).join('')}
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">📊 Performance Overview</div>
+      <div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:16px">
+        ${makeSpeedo(acc, 100, 'Accuracy', 'var(--primary)')}
+        ${makeSpeedo(myRank > 0 ? Math.max(0, Math.round((1 - myRank / (lb?.length||1)) * 100)) : 0, 100, 'Rank Score', 'var(--secondary)')}
+        ${makeSpeedo(quizCount, Math.max(5, lb?.length || 5), 'Participation', '#F9A825')}
+      </div>
+    </div>
+    <div class="card">
+      ${quizCount === 0
+        ? '<div style="color:var(--muted);font-size:14px">No quiz scores yet. Play a quiz to get started! 🎯</div>'
+        : `<div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">📈 Recent Scores</div>
+           ${(scores||[]).slice(0,5).map((s,i,arr) => `
+             <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;${i<arr.length-1?'border-bottom:1px solid var(--border)':''}">
+               <div><div style="font-weight:600;font-size:14px">${s.quiz_name}</div>
+               <div style="font-size:12px;color:var(--muted)">${s.played_at?.split('T')[0]||''}</div></div>
+               <span class="badge" style="background:${s.score>800?'#e8f5e9':'#e3f2fd'};color:${s.score>800?'var(--primary)':'var(--secondary)'}">${s.score.toLocaleString()} pts</span>
+             </div>`).join('')}`}
+    </div>`;
+}
+
+async function renderContestantQuizzes(){
+  const el = document.getElementById('c-quizzes');
+  el.innerHTML = loadingHtml('Loading quizzes...');
+  const { data: quizzes, error } = await db
+    .from('quizzes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error || !quizzes?.length) {
+    el.innerHTML = '<div class="card" style="color:var(--muted)">No quizzes available yet. Check back soon! 🎯</div>';
+    return;
+  }
+  el.innerHTML = `<div style="font-weight:800;font-size:18px;color:var(--primary);margin-bottom:14px">Available Quizzes</div>` +
+    quizzes.map(q => `
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-weight:700;font-size:16px">${q.name}</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:3px">
+              ${(q.questions||[]).length} questions · ${q.type==='devotional'?'Daily Devotional':'Major Quiz'} · ${q.created_at?.split('T')[0]||''}
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="badge" style="background:${q.type==='devotional'?'#e0f2f1':'#f3e5f5'};color:${q.type==='devotional'?'var(--teal)':'#6A1B9A'}">${q.type}</span>
+            <button class="gbtn" onclick='startQuiz(${JSON.stringify(q).replace(/'/g,"&#39;")})' style="padding:8px 18px;font-size:13px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">▶ Play Now</button>
+          </div>
+        </div>
       </div>`).join('');
 }
 
-function renderContestantQuizzes() {
-  document.getElementById('c-quizlist').innerHTML = quizzes.map(q=>`
-    <div class="card" style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
-        <div>
-          <div style="font-weight:700;font-size:16px">${q.name}</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:3px">${q.questions.length} questions · ${q.type==='devotional'?'Daily Devotional':'Major Quiz'} · ${q.date}</div>
+async function renderContestantLeaderboard(){
+  const el = document.getElementById('c-leaderboard');
+  el.innerHTML = loadingHtml('Loading leaderboard...');
+  const { data: lb } = await db
+    .from('profiles')
+    .select('id, name, total_score')
+    .eq('role', 'contestant')
+    .eq('status', 'approved')
+    .order('total_score', { ascending: false })
+    .limit(20);
+
+  el.innerHTML = `<div class="card">
+    <div style="font-weight:700;font-size:18px;color:var(--primary);margin-bottom:14px">🏆 Global Leaderboard</div>
+    ${(lb||[]).map((u,i) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;${i<lb.length-1?'border-bottom:1px solid var(--border)':''};${u.id===currentUser.id?'background:#e8f5e9;border-radius:8px;padding-left:8px':''}">
+        <div style="width:32px;height:32px;border-radius:50%;background:${i===0?'#F9A825':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--border)'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:${i<3?'var(--brown)':'var(--muted)'}">#${i+1}</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:15px">${u.name[0]}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">${u.name}${u.id===currentUser.id?' <span class="badge" style="background:#e8f5e9;color:var(--primary);font-size:11px">You</span>':''}</div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <span class="badge" style="background:${q.type==='devotional'?'#e0f2f1':'#f3e5f5'};color:${q.type==='devotional'?'var(--teal)':'#6A1B9A'}">${q.type}</span>
-          <button class="gbtn" onclick="startQuiz(${q.id})" style="padding:8px 18px;font-size:13px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">▶ Play Now</button>
-        </div>
-      </div>
-    </div>`).join('');
+        <div style="font-weight:800;font-size:16px;color:var(--primary)">${(u.total_score||0).toLocaleString()}</div>
+      </div>`).join('')}
+  </div>`;
 }
 
-function renderContestantLeaderboard() {
-  const lb = getLeaderboard();
-  document.getElementById('c-lbody').innerHTML = lb.slice(0,10).map((u,i)=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;${i<9?'border-bottom:1px solid var(--border)':''};${u.id===currentUser.id?'background:#e8f5e9;border-radius:8px;padding-left:8px':''}">
-      <div style="width:32px;height:32px;border-radius:50%;background:${i===0?'#F9A825':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--border)'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:${i<3?'var(--brown)':'var(--muted)'}">#${i+1}</div>
-      <div style="width:36px;height:36px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:15px">${u.name[0]}</div>
-      <div style="flex:1"><div style="font-weight:600;font-size:14px">${u.name}${u.id===currentUser.id?' <span class="badge" style="background:#e8f5e9;color:var(--primary);font-size:11px">You</span>':''}</div><div style="font-size:12px;color:var(--muted)">${u.scores.length} quizzes</div></div>
-      <div style="font-weight:800;font-size:16px;color:var(--primary)">${u.totalScore.toLocaleString()}</div>
-    </div>`).join('');
-}
-
-function renderContestantProfile() {
-  const u = currentUser;
-  document.getElementById('c-profilebody').innerHTML =
-    `<div style="font-weight:700;font-size:17px;color:var(--primary);margin-bottom:14px">👤 My Profile</div>` +
-    [['Full Name',u.name],['Email',u.email],['Phone',u.phone||'—'],['Join Date',u.joinDate],
-     ['Account Name',u.bank.name||'—'],['Bank Name',u.bank.bankName||'—'],
-     ['Account Number',(u.bank.accountNumber||'—').replace(/(\d{4})(\d{4})(\d+)/,'$1 $2 $3')]
-    ].map(([l,v],i,arr)=>`
+async function renderContestantProfile(){
+  const { data: p } = await db
+    .from('profiles').select('*').eq('id', currentUser.id).single();
+  const profile = p || currentUser;
+  document.getElementById('c-profile').innerHTML = `<div class="card">
+    <div style="font-weight:700;font-size:17px;color:var(--primary);margin-bottom:14px">👤 My Profile</div>
+    ${[['Full Name', profile.name], ['Email', profile.email], ['Phone', profile.phone],
+       ['Join Date', profile.join_date], ['Account Name', profile.bank_account_name||'—'],
+       ['Bank Name', profile.bank_name||'—'], ['Account Number', (profile.bank_account_number||'').replace(/(\d{4})(\d{4})(\d+)/,'$1 $2 $3')]
+      ].map(([l,v],i,arr) => `
       <div style="display:flex;justify-content:space-between;padding:10px 0;${i<arr.length-1?'border-bottom:1px solid var(--border)':''}">
         <span style="color:var(--muted);font-weight:600;font-size:14px">${l}</span>
-        <span style="font-weight:700;font-size:14px">${v}</span>
-      </div>`).join('');
+        <span style="font-weight:700;font-size:14px">${v||'—'}</span>
+      </div>`).join('')}
+  </div>`;
 }
+function goContestant(){ goTo('s-contestant'); renderContestantOverview(); cTab('c-overview', document.querySelector('#s-contestant .tab-btn')); }
 
-function goContestant() {
-  goTo('s-contestant');
-  renderContestantOverview();
-  cTab('c-overview', document.querySelector('#s-contestant .tab-btn'));
-}
-
-// =========================================================
-// =================== QUIZ ENGINE =========================
-// =========================================================
-function startQuiz(qid) {
-  activeQuiz = quizzes.find(q=>q.id===qid);
-  if (!activeQuiz) return;
-  quizState = {currentQ:0, timeLeft:activeQuiz.questions[0].time, answered:null, score:0, results:[], phase:'question'};
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+function startQuiz(quiz){
+  // quiz may come in as object (from Supabase) or stringified
+  activeQuiz = typeof quiz === 'string' ? JSON.parse(quiz) : quiz;
+  if (!activeQuiz?.questions?.length) return notify('Quiz has no questions', 'error');
+  quizState = { currentQ:0, timeLeft: activeQuiz.questions[0].time||20, answered:null, score:0, results:[], phase:'question' };
   renderQuizQuestion();
   goTo('s-quiz');
   startTimer();
 }
-
-function renderQuizQuestion() {
-  if (!quizState||!activeQuiz) return;
+function renderQuizQuestion(){
+  if (!quizState || !activeQuiz) return;
   const q = activeQuiz.questions[quizState.currentQ];
-  document.getElementById('q-quizname').textContent  = '💧 '+activeQuiz.name;
-  document.getElementById('q-score').textContent     = '⭐ '+quizState.score.toLocaleString();
-  document.getElementById('q-progress').textContent  = `${quizState.currentQ+1}/${activeQuiz.questions.length}`;
-  document.getElementById('q-progbar').style.width   = (quizState.currentQ/activeQuiz.questions.length*100)+'%';
-  document.getElementById('q-qnum').textContent      = `Question ${quizState.currentQ+1} of ${activeQuiz.questions.length}`;
-  document.getElementById('q-qtext').textContent     = q.text;
-  document.getElementById('q-pts').textContent       = `⚡ Up to ${q.points} points`;
-  document.getElementById('q-result').style.display  = 'none';
+  document.getElementById('q-quizname').textContent = '💧 ' + activeQuiz.name;
+  document.getElementById('q-score').textContent    = '⭐ ' + quizState.score.toLocaleString();
+  document.getElementById('q-progress').textContent = `${quizState.currentQ+1}/${activeQuiz.questions.length}`;
+  document.getElementById('q-progbar').style.width  = (quizState.currentQ/activeQuiz.questions.length*100) + '%';
+  document.getElementById('q-qnum').textContent  = `Question ${quizState.currentQ+1} of ${activeQuiz.questions.length}`;
+  document.getElementById('q-qtext').textContent = q.text;
+  document.getElementById('q-pts').textContent   = `⚡ Up to ${q.points||1000} points`;
+  document.getElementById('q-result').style.display = 'none';
   document.getElementById('q-timerfill').style.width = '100%';
-  document.getElementById('q-timerlabel').textContent = q.time+'s';
-  const OPT_COLORS = ["#e53935","#1565C0","#2e7d32","#F9A825"];
-  const OPT_ICONS  = ["◆","●","▲","★"];
-  document.getElementById('q-opts').innerHTML = q.options.map((opt,i)=>`
+  document.getElementById('q-timerlabel').textContent = (q.time||20) + 's';
+  document.getElementById('q-opts').innerHTML = q.options.map((opt,i) => `
     <button class="opt-btn" onclick="answerQ(${i})" id="opt-${i}" style="background:${OPT_COLORS[i]}">
       <span style="font-size:18px">${OPT_ICONS[i]}</span><span>${opt}</span>
     </button>`).join('');
 }
-
-function startTimer() {
+function startTimer(){
   if (timerInterval) clearInterval(timerInterval);
   if (!quizState) return;
   const q = activeQuiz.questions[quizState.currentQ];
-  const total = q.time;
-  timerInterval = setInterval(()=>{
-    if (!quizState||quizState.phase!=='question') { clearInterval(timerInterval); return; }
-    quizState.timeLeft = Math.max(0, quizState.timeLeft-1);
-    const pct = (quizState.timeLeft/total)*100;
+  const total = q.time || 20;
+  timerInterval = setInterval(() => {
+    if (!quizState || quizState.phase !== 'question'){ clearInterval(timerInterval); return; }
+    quizState.timeLeft = Math.max(0, quizState.timeLeft - 1);
+    const pct = (quizState.timeLeft / total) * 100;
     const fill = document.getElementById('q-timerfill');
     const lbl  = document.getElementById('q-timerlabel');
-    if (fill) fill.style.background = pct>50?'var(--primary)':pct>25?'#F57F17':'#C62828';
-    if (fill) fill.style.width = pct+'%';
-    if (lbl)  lbl.textContent = quizState.timeLeft+'s';
-    if (quizState.timeLeft<=0) { clearInterval(timerInterval); answerQ(-1); }
-  },1000);
+    if(fill){ fill.style.background = pct>50?'var(--primary)':pct>25?'#F57F17':'#C62828'; fill.style.width=pct+'%'; }
+    if(lbl) lbl.textContent = quizState.timeLeft + 's';
+    if (quizState.timeLeft <= 0){ clearInterval(timerInterval); answerQ(-1); }
+  }, 1000);
 }
-
-function answerQ(idx) {
-  if (!quizState||quizState.phase!=='question') return;
+function answerQ(idx){
+  if (!quizState || quizState.phase !== 'question') return;
   clearInterval(timerInterval);
   const q = activeQuiz.questions[quizState.currentQ];
-  const isCorrect = idx===q.correct;
-  const timeBonus = isCorrect ? Math.round((quizState.timeLeft/q.time)*q.points) : 0;
-  quizState.answered = idx; quizState.phase='result'; quizState.score += timeBonus;
-  quizState.results.push({q:q.text, correct:isCorrect, earned:timeBonus, chosen:idx, correctIdx:q.correct});
-  for (let i=0;i<q.options.length;i++) {
+  const isCorrect = idx === q.correct;
+  const timeBonus = isCorrect ? Math.round((quizState.timeLeft/(q.time||20))*(q.points||1000)) : 0;
+  quizState.answered = idx; quizState.phase = 'result'; quizState.score += timeBonus;
+  quizState.results.push({ q: q.text, correct: isCorrect, earned: timeBonus, chosen: idx, correctIdx: q.correct });
+  for (let i=0; i<q.options.length; i++){
     const btn = document.getElementById('opt-'+i);
     if (!btn) continue;
-    if (i===q.correct)            { btn.style.background='#2e7d32'; btn.innerHTML+=` <span style="margin-left:auto">✓</span>`; }
-    else if (i===idx&&i!==q.correct){ btn.style.background='#C62828'; btn.style.opacity='.75'; btn.innerHTML+=` <span style="margin-left:auto">✗</span>`; }
-    else                           { btn.style.opacity='.45'; }
+    if (i===q.correct){ btn.style.background='#2e7d32'; btn.innerHTML+=` <span style="margin-left:auto">✓</span>`; }
+    else if (i===idx && i!==q.correct){ btn.style.background='#C62828'; btn.style.opacity='0.75'; btn.innerHTML+=` <span style="margin-left:auto">✗</span>`; }
+    else { btn.style.opacity='0.45'; }
     btn.disabled = true;
   }
   const rm = document.getElementById('q-resultmsg');
@@ -817,47 +653,45 @@ function answerQ(idx) {
   document.getElementById('q-nextbtn').textContent = quizState.currentQ+1>=activeQuiz.questions.length ? 'Finish Quiz 🎉' : 'Next Question →';
   document.getElementById('q-result').style.display = 'block';
 }
-
-function nextQuestion() {
-  if (!quizState||!activeQuiz) return;
-  const next = quizState.currentQ+1;
-  if (next>=activeQuiz.questions.length) { finishQuiz(); }
+function nextQuestion(){
+  if (!quizState || !activeQuiz) return;
+  const next = quizState.currentQ + 1;
+  if (next >= activeQuiz.questions.length){ finishQuiz(); }
   else {
-    quizState.currentQ=next; quizState.timeLeft=activeQuiz.questions[next].time;
-    quizState.answered=null; quizState.phase='question';
-    renderQuizQuestion(); startTimer();
+    quizState.currentQ = next;
+    quizState.timeLeft = activeQuiz.questions[next].time || 20;
+    quizState.answered = null;
+    quizState.phase = 'question';
+    renderQuizQuestion();
+    startTimer();
   }
 }
-
-async function finishQuiz() {
+async function finishQuiz(){
   clearInterval(timerInterval);
   const finalScore = quizState.score;
-  const entry = {quiz:activeQuiz.name, score:finalScore, date:new Date().toISOString().split('T')[0]};
 
-  // Update local currentUser state
-  currentUser.scores = [...currentUser.scores, entry];
-  currentUser.totalScore += finalScore;
+  // Save score to DB
+  await db.from('scores').insert({
+    user_id: currentUser.id,
+    quiz_id: activeQuiz.id,
+    quiz_name: activeQuiz.name,
+    score: finalScore,
+    played_at: new Date().toISOString()
+  });
 
-  // Persist to Supabase
-  try {
-    await sb.from('profiles').update({
-      scores:      currentUser.scores,
-      total_score: currentUser.totalScore
-    }).eq('id', currentUser.id);
-    await refreshUsersCache();
-  } catch(e) { console.error('Score save error:', e); }
+  // Update total_score on profile
+  await db.from('profiles')
+    .update({ total_score: (currentUser.total_score||0) + finalScore })
+    .eq('id', currentUser.id);
+
+  currentUser.total_score = (currentUser.total_score||0) + finalScore;
 
   const correct = quizState.results.filter(r=>r.correct).length;
   const total   = quizState.results.length;
   const pct     = Math.round((correct/total)*100);
-
   document.getElementById('qd-icon').textContent = pct>=80?'🏆':pct>=60?'🥈':'📖';
   document.getElementById('qd-score').textContent = finalScore.toLocaleString();
-  document.getElementById('qd-stats').innerHTML = [
-    ['✅ Correct',`${correct}/${total}`],
-    ['🎯 Accuracy',`${pct}%`],
-    ['⚡ Earned',finalScore.toLocaleString()]
-  ].map(([l,v])=>`
+  document.getElementById('qd-stats').innerHTML = [['✅ Correct',`${correct}/${total}`],['🎯 Accuracy',`${pct}%`],['⚡ Earned',finalScore.toLocaleString()]].map(([l,v])=>`
     <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px">
       <div style="font-size:12px;opacity:.8">${l}</div>
       <div style="font-weight:800;font-size:20px">${v}</div>
@@ -870,40 +704,59 @@ async function finishQuiz() {
   goTo('s-quizdone');
 }
 
-// =========================================================
-// ====================== ADMIN ============================
-// =========================================================
-function renderAdminDashboard() {
-  const lb=getLeaderboard(), app=getApproved(), pend=getPending(), flag=getFlagged();
-  const all = usersCache.filter(u=>u.role==='contestant');
-  const avg = app.length>0 ? Math.round(app.reduce((s,u)=>s+u.totalScore,0)/app.length) : 0;
+// ============================================================
+// ADMIN SCREENS
+// ============================================================
+async function renderAdminDashboard(){
+  const el = document.getElementById('a-dashboard');
+  el.innerHTML = loadingHtml('Loading dashboard...');
 
-  document.getElementById('a-dashboard').innerHTML=`
+  const [{ data: allUsers }, { data: quizzes }, { data: scores }] = await Promise.all([
+    db.from('profiles').select('id,name,role,status,total_score,flagged').eq('role','contestant'),
+    db.from('quizzes').select('id,name,type,status,created_at'),
+    db.from('scores').select('quiz_name,score')
+  ]);
+
+  const app  = (allUsers||[]).filter(u=>u.status==='approved');
+  const pend = (allUsers||[]).filter(u=>u.status==='pending');
+  const flag = (allUsers||[]).filter(u=>u.flagged);
+  const lb   = [...app].sort((a,b)=>(b.total_score||0)-(a.total_score||0));
+  const avg  = app.length > 0 ? Math.round(app.reduce((s,u)=>s+(u.total_score||0),0)/app.length) : 0;
+
+  el.innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px">
-      ${[['👥 Contestants',all.length,'var(--primary)'],['✅ Approved',app.length,'var(--success)'],['⏳ Pending',pend.length,'var(--warning)'],['⚠️ Flagged',flag.length,'var(--danger)'],['📖 Quizzes',quizzes.length,'var(--secondary)'],['⭐ Avg Score',avg.toLocaleString(),'#F9A825']].map(([l,v,c])=>`
-        <div class="card" style="text-align:center;border-top:4px solid ${c}">
+      ${[['👥 Contestants',(allUsers||[]).length,'var(--primary)'],
+         ['✅ Approved',app.length,'var(--success)'],
+         ['⏳ Pending',pend.length,'var(--warning)'],
+         ['⚠️ Flagged',flag.length,'var(--danger)'],
+         ['📖 Quizzes',(quizzes||[]).length,'var(--secondary)'],
+         ['⭐ Avg Score',avg.toLocaleString(),'#F9A825']
+        ].map(([l,v,c])=>`<div class="card" style="text-align:center;border-top:4px solid ${c}">
           <div style="font-size:12px;color:var(--muted);font-weight:600">${l}</div>
           <div style="font-size:28px;font-weight:800;color:${c}">${v}</div>
         </div>`).join('')}
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:16px">
-      <div class="card"><div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">🏆 Top 5 Scores</div><div style="position:relative;height:220px"><canvas id="ch-top5"></canvas></div></div>
-      <div class="card"><div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">👥 User Status</div><div style="position:relative;height:220px"><canvas id="ch-status"></canvas></div></div>
-      <div class="card"><div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">📈 Avg Score / Quiz</div><div style="position:relative;height:220px"><canvas id="ch-trend"></canvas></div></div>
+      <div class="card"><div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">🏆 Top 5 Scores</div>
+        <div style="position:relative;height:220px"><canvas id="ch-top5"></canvas></div></div>
+      <div class="card"><div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">👥 User Status</div>
+        <div style="position:relative;height:220px"><canvas id="ch-status"></canvas></div></div>
+      <div class="card"><div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">📈 Avg Score / Quiz</div>
+        <div style="position:relative;height:220px"><canvas id="ch-trend"></canvas></div></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
       <div class="card">
         <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">🎯 Performance Meters</div>
         <div style="display:flex;justify-content:space-around">
-          ${makeSpeedo(app.length,Math.max(all.length,1),'Approval Rate','var(--primary)')}
-          ${makeSpeedo(app.filter(u=>u.scores.length>0).length,Math.max(app.length,1),'Participation','var(--secondary)')}
+          ${makeSpeedo(app.length, Math.max(allUsers?.length||1,1), 'Approval Rate', 'var(--primary)')}
+          ${makeSpeedo(app.filter(u=>(u.total_score||0)>0).length, Math.max(app.length,1), 'Participation', 'var(--secondary)')}
         </div>
       </div>
       <div class="card">
         <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">⚠️ Flagged Users</div>
-        ${flag.length===0?'<div style="color:var(--muted);font-size:14px">No flagged users 🎉</div>':flag.map(u=>`
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-            <div><div style="font-weight:600">${u.name}</div><div style="color:var(--muted)">${u.email}</div></div>
+        ${flag.length===0 ? '<div style="color:var(--muted);font-size:14px">No flagged users 🎉</div>' :
+          flag.map(u=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <div><div style="font-weight:600">${u.name}</div></div>
             <span class="badge" style="background:#fde8e8;color:var(--danger)">Duplicate ⚠️</span>
           </div>`).join('')}
       </div>
@@ -911,93 +764,102 @@ function renderAdminDashboard() {
 
   setTimeout(()=>{
     const top5 = lb.slice(0,5);
-    if (document.getElementById('ch-top5')&&window.Chart) {
+    if(document.getElementById('ch-top5')&&window.Chart){
       destroyChart('ch-top5');
-      adminCharts['ch-top5']=new Chart(document.getElementById('ch-top5'),{type:'bar',data:{labels:top5.map(u=>u.name.split(' ')[0]),datasets:[{label:'Score',data:top5.map(u=>u.totalScore),backgroundColor:['#F9A825','#1a7a4a','#1565C0','#00897B','#6A1B9A'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#f0f0f0'}}}}});
+      adminCharts['ch-top5']=new Chart(document.getElementById('ch-top5'),{type:'bar',data:{labels:top5.map(u=>u.name.split(' ')[0]),datasets:[{label:'Score',data:top5.map(u=>u.total_score||0),backgroundColor:['#F9A825','#1a7a4a','#1565C0','#00897B','#6A1B9A'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#f0f0f0'}}}}});
     }
-    if (document.getElementById('ch-status')&&window.Chart) {
+    if(document.getElementById('ch-status')&&window.Chart){
       destroyChart('ch-status');
       adminCharts['ch-status']=new Chart(document.getElementById('ch-status'),{type:'doughnut',data:{labels:['Approved','Pending','Flagged'],datasets:[{data:[app.length,pend.length,flag.length],backgroundColor:['#1a7a4a','#F57F17','#C62828'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},cutout:'65%'}});
     }
-    if (document.getElementById('ch-trend')&&window.Chart) {
+    if(document.getElementById('ch-trend')&&window.Chart&&scores){
       destroyChart('ch-trend');
-      adminCharts['ch-trend']=new Chart(document.getElementById('ch-trend'),{type:'line',data:{labels:quizzes.map(q=>q.date),datasets:[{label:'Avg Score',data:quizzes.map(q=>{const sc=app.flatMap(u=>u.scores.filter(s=>s.quiz===q.name).map(s=>s.score));return sc.length>0?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):0;}),borderColor:'#1a7a4a',backgroundColor:'rgba(26,122,74,.15)',fill:true,tension:.4,pointRadius:6,pointBackgroundColor:'#1a7a4a'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#f0f0f0'}}}}});
+      const quizNames=[...new Set(scores.map(s=>s.quiz_name))];
+      const avgPerQuiz=quizNames.map(name=>{const sc=scores.filter(s=>s.quiz_name===name).map(s=>s.score);return sc.length>0?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):0;});
+      adminCharts['ch-trend']=new Chart(document.getElementById('ch-trend'),{type:'line',data:{labels:quizNames,datasets:[{label:'Avg Score',data:avgPerQuiz,borderColor:'#1a7a4a',backgroundColor:'rgba(26,122,74,.15)',fill:true,tension:.4,pointRadius:6,pointBackgroundColor:'#1a7a4a'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#f0f0f0'}}}}});
     }
-  },100);
+  }, 100);
 }
+function destroyChart(id){ const c=Chart.getChart(document.getElementById(id)); if(c)c.destroy(); }
 
-function destroyChart(id) {
-  const c = Chart.getChart(document.getElementById(id));
-  if (c) c.destroy();
-}
+async function renderAdminUsers(){
+  const el = document.getElementById('a-users');
+  el.innerHTML = loadingHtml('Loading users...');
+  const { data: users } = await db
+    .from('profiles')
+    .select('id,name,email,phone,join_date,bank_name,status,role,flagged')
+    .eq('role','contestant')
+    .order('join_date', { ascending: false });
 
-function renderAdminUsers() {
-  const all = usersCache.filter(u=>u.role==='contestant');
-  document.getElementById('a-users').innerHTML=`
+  el.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
       <div style="font-weight:800;font-size:20px;color:var(--primary)">👥 User Management</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input type="text" id="usr-search" placeholder="🔍 Search..." style="width:180px" oninput="filterUsers()"/>
+        <input type="text" id="usr-search" placeholder="🔍 Search..." style="width:180px" oninput="filterAdminUsers()"/>
         <button class="gbtn" onclick="bulkApproveAll()" style="padding:8px 16px;font-size:13px;background:var(--success)">✅ Approve All Pending</button>
       </div>
     </div>
     <div class="card" style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:13px" id="usr-table">
         <thead><tr style="background:#e8f5e9">
-          <th style="padding:10px 8px;text-align:left;color:var(--primary)"><input type="checkbox" id="chk-all" onchange="toggleAllPending(this)"/></th>
-          ${['Name','Email','Phone','Join Date','Bank','Status','Action'].map(h=>`<th style="padding:10px 8px;text-align:left;font-weight:700;color:var(--primary)">${h}</th>`).join('')}
+          <th style="padding:10px 8px"><input type="checkbox" id="chk-all" onchange="toggleAllPending(this)"/></th>
+          ${['Name','Email','Phone','Joined','Bank','Status','Action'].map(h=>`<th style="padding:10px 8px;text-align:left;font-weight:700;color:var(--primary)">${h}</th>`).join('')}
         </tr></thead>
         <tbody id="usr-tbody"></tbody>
       </table>
     </div>`;
-  renderUserRows(all);
-}
 
-function renderUserRows(list) {
-  document.getElementById('usr-tbody').innerHTML = list.map((u,i)=>`
+  window._adminUsers = users || [];
+  renderUserRows(window._adminUsers);
+}
+function renderUserRows(list){
+  const tbody = document.getElementById('usr-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = list.map((u,i) => `
     <tr style="background:${i%2===0?'#fff':'#f9fffe'};border-bottom:1px solid var(--border)">
       <td style="padding:10px 8px">${u.status==='pending'?`<input type="checkbox" class="pend-chk" value="${u.id}"/>`:'—'}</td>
-      <td style="padding:10px 8px;font-weight:600">${u.name}${u.flagged?` <span class="badge" style="background:#fde8e8;color:var(--danger);font-size:10px">⚠️ FLAG</span>`:''}</td>
+      <td style="padding:10px 8px;font-weight:600">${u.name}${u.flagged?` <span class="badge" style="background:#fde8e8;color:var(--danger);font-size:10px">⚠️</span>`:''}</td>
       <td style="padding:10px 8px;color:var(--muted)">${u.email}</td>
       <td style="padding:10px 8px">${u.phone||'—'}</td>
-      <td style="padding:10px 8px;color:var(--muted)">${u.joinDate}</td>
-      <td style="padding:10px 8px;font-size:12px">${u.bank.bankName||'—'}</td>
-      <td style="padding:10px 8px"><span class="badge" style="background:${u.status==='approved'?'#e8f5e9':u.status==='pending'?'#fff8e1':'#fde8e8'};color:${u.status==='approved'?'var(--success)':u.status==='pending'?'var(--warning)':'var(--danger)'}">${u.status}</span></td>
+      <td style="padding:10px 8px;color:var(--muted)">${u.join_date||'—'}</td>
+      <td style="padding:10px 8px;font-size:12px">${u.bank_name||'—'}</td>
+      <td style="padding:10px 8px">
+        <span class="badge" style="background:${u.status==='approved'?'#e8f5e9':u.status==='pending'?'#fff8e1':'#fde8e8'};color:${u.status==='approved'?'var(--success)':u.status==='pending'?'var(--warning)':'var(--danger)'}">${u.status}</span>
+      </td>
       <td style="padding:10px 8px">${u.status==='pending'?`<button class="gbtn" onclick="approveUser('${u.id}')" style="padding:6px 12px;font-size:12px;background:var(--success)">Approve</button>`:''}</td>
     </tr>`).join('');
 }
-
-function filterUsers() {
+function filterAdminUsers(){
   const q = document.getElementById('usr-search').value.toLowerCase();
-  const list = usersCache.filter(u=>u.role==='contestant'&&(u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)));
-  renderUserRows(list);
+  renderUserRows((window._adminUsers||[]).filter(u=>u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)));
 }
-
-async function approveUser(id) {
-  const { error } = await sb.from('profiles').update({status:'approved'}).eq('id', id);
-  if (error) return notify(error.message, "error");
-  await refreshUsersCache();
-  notify('User approved! ✓');
+async function approveUser(id){
+  const { error } = await db.from('profiles').update({ status: 'approved' }).eq('id', id);
+  if (error) return notify('Failed to approve user', 'error');
+  notify('User approved!');
   renderAdminUsers();
 }
-
-async function bulkApproveAll() {
+async function bulkApproveAll(){
   const chks = document.querySelectorAll('.pend-chk:checked');
-  const ids  = chks.length>0 ? [...chks].map(c=>c.value) : getPending().map(u=>u.id);
-  if (ids.length===0) return notify('No pending users','warning');
-  const { error } = await sb.from('profiles').update({status:'approved'}).in('id', ids);
-  if (error) return notify(error.message, "error");
-  await refreshUsersCache();
-  notify(`${ids.length} user(s) approved! ✓`);
+  const ids = chks.length > 0
+    ? [...chks].map(c => c.value)
+    : (window._adminUsers||[]).filter(u=>u.status==='pending').map(u=>u.id);
+  if (!ids.length) return notify('No pending users', 'warning');
+  const { error } = await db.from('profiles').update({ status: 'approved' }).in('id', ids);
+  if (error) return notify('Bulk approve failed', 'error');
+  notify(`${ids.length} user(s) approved!`);
   renderAdminUsers();
 }
-
-function toggleAllPending(cb) {
-  document.querySelectorAll('.pend-chk').forEach(c=>c.checked=cb.checked);
+function toggleAllPending(cb){
+  document.querySelectorAll('.pend-chk').forEach(c => c.checked = cb.checked);
 }
 
-function renderAdminQuizzes() {
-  document.getElementById('a-quizzes').innerHTML=`
+async function renderAdminQuizzes(){
+  const el = document.getElementById('a-quizzes');
+  el.innerHTML = loadingHtml('Loading quizzes...');
+  const { data: quizzes } = await db.from('quizzes').select('*').order('created_at', { ascending: false });
+
+  el.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div style="font-weight:800;font-size:20px;color:var(--primary)">🎯 Quiz Management</div>
     </div>
@@ -1011,7 +873,7 @@ function renderAdminQuizzes() {
         <div style="font-weight:700;font-size:14px;margin-bottom:10px;color:var(--primary)">Add Question</div>
         <input type="text" id="nq-qtext" placeholder="Question text..." style="margin-bottom:8px"/>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-          ${[0,1,2,3].map(i=>`<div style="display:flex;gap:6px;align-items:center"><input type="radio" name="nq-correct" value="${i}" ${i===0?'checked':''}/><input type="text" id="nq-opt${i}" placeholder="Option ${i+1}" style="flex:1"/></div>`).join('')}
+          ${[0,1,2,3].map(i=>`<div style="display:flex;gap:6px;align-items:center"><input type="radio" name="nq-correct" value="${i}" ${i===0?'checked':''}/><input type="text" id="nq-opt${i}" placeholder="Option ${i+1}" style="flex:1;border-color:${OPT_COLORS[i]}88"/></div>`).join('')}
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
           <select id="nq-time" style="width:auto">${[10,15,20,30,45,60].map(t=>`<option value="${t}"${t===20?' selected':''}>${t}s</option>`).join('')}</select>
@@ -1022,96 +884,110 @@ function renderAdminQuizzes() {
       <div id="nq-qlist" style="margin-bottom:12px;font-size:13px;color:var(--muted)"></div>
       <button class="gbtn" onclick="publishQuiz()" style="padding:13px 28px;font-size:15px;background:linear-gradient(135deg,var(--primary),var(--primaryDk))">🚀 Publish Quiz</button>
     </div>
-    <div style="font-weight:700;font-size:16px;color:var(--primary);margin-bottom:10px">Existing Quizzes</div>
-    ${quizzes.map(q=>`
+    <div style="font-weight:700;font-size:16px;color:var(--primary);margin-bottom:10px">Existing Quizzes (${(quizzes||[]).length})</div>
+    ${(quizzes||[]).map(q=>`
       <div class="card" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
         <div>
           <div style="font-weight:700;font-size:15px">${q.name}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:3px">${q.questions.length} questions · ${q.date} · Host: ${q.host}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">${(q.questions||[]).length} questions · ${q.created_at?.split('T')[0]||''}</div>
         </div>
         <div style="display:flex;gap:8px">
           <span class="badge" style="background:${q.type==='devotional'?'#e0f2f1':'#f3e5f5'};color:${q.type==='devotional'?'var(--teal)':'#6A1B9A'}">${q.type}</span>
           <span class="badge" style="background:#e8f5e9;color:var(--success)">${q.status}</span>
+          <button class="gbtn" onclick="deleteQuiz('${q.id}')" style="padding:5px 10px;font-size:12px;background:var(--danger)">🗑</button>
         </div>
       </div>`).join('')}`;
   window._nqQuestions = [];
 }
-
-function addNQQuestion() {
-  const text   = document.getElementById('nq-qtext').value.trim();
-  const opts   = [0,1,2,3].map(i=>document.getElementById('nq-opt'+i).value.trim());
-  const correct= +document.querySelector('input[name="nq-correct"]:checked').value;
-  const time   = +document.getElementById('nq-time').value;
+function addNQQuestion(){
+  const text = document.getElementById('nq-qtext').value.trim();
+  const opts = [0,1,2,3].map(i=>document.getElementById('nq-opt'+i).value.trim());
+  const correct = +document.querySelector('input[name="nq-correct"]:checked').value;
+  const time = +document.getElementById('nq-time').value;
   const points = +document.getElementById('nq-pts').value;
-  if (!text||opts.some(o=>!o)) return notify('Fill all question fields','error');
-  if (!window._nqQuestions) window._nqQuestions=[];
-  window._nqQuestions.push({id:window._nqQuestions.length+1,text,options:opts,correct,time,points});
-  document.getElementById('nq-qlist').innerHTML=`<strong>${window._nqQuestions.length} question(s):</strong><br>`+window._nqQuestions.map((q,i)=>`• Q${i+1}: ${q.text}`).join('<br>');
-  document.getElementById('nq-qtext').value='';
+  if (!text || opts.some(o=>!o)) return notify('Fill all question fields', 'error');
+  if (!window._nqQuestions) window._nqQuestions = [];
+  window._nqQuestions.push({ id: window._nqQuestions.length+1, text, options: opts, correct, time, points });
+  document.getElementById('nq-qlist').innerHTML = `<strong>${window._nqQuestions.length} question(s):</strong><br>`+window._nqQuestions.map((q,i)=>`• Q${i+1}: ${q.text}`).join('<br>');
+  document.getElementById('nq-qtext').value = '';
   [0,1,2,3].forEach(i=>document.getElementById('nq-opt'+i).value='');
   notify('Question added ✓');
 }
-
-function publishQuiz() {
+async function publishQuiz(){
   const name = document.getElementById('nq-name').value.trim();
   const type = document.getElementById('nq-type').value;
-  if (!name) return notify('Enter quiz name','error');
-  if (!window._nqQuestions||window._nqQuestions.length===0) return notify('Add at least one question','error');
-  quizzes.push({id:quizzes.length+1,name,questions:window._nqQuestions,type,status:'live',date:new Date().toISOString().split('T')[0],host:currentUser.name});
+  if (!name) return notify('Enter quiz name', 'error');
+  if (!window._nqQuestions || window._nqQuestions.length === 0) return notify('Add at least one question', 'error');
+  const { error } = await db.from('quizzes').insert({
+    name, type, status: 'live',
+    questions: window._nqQuestions,
+    host_id: currentUser.id,
+    created_at: new Date().toISOString()
+  });
+  if (error) return notify('Failed to publish quiz: ' + error.message, 'error');
   notify('Quiz published! 🎉');
-  window._nqQuestions=[];
+  window._nqQuestions = [];
+  renderAdminQuizzes();
+}
+async function deleteQuiz(id){
+  if (!confirm('Delete this quiz? This cannot be undone.')) return;
+  await db.from('quizzes').delete().eq('id', id);
   renderAdminQuizzes();
 }
 
-function renderAdminLeaderboard() {
-  const lb = getLeaderboard();
-  document.getElementById('a-leaderboard').innerHTML=`
+async function renderAdminLeaderboard(){
+  const el = document.getElementById('a-leaderboard');
+  el.innerHTML = loadingHtml('Loading leaderboard...');
+  const { data: lb } = await db
+    .from('profiles')
+    .select('id,name,email,total_score,join_date')
+    .eq('role','contestant').eq('status','approved')
+    .order('total_score', { ascending: false });
+
+  // get quiz count per user from scores table
+  const { data: scoreSummary } = await db
+    .from('scores')
+    .select('user_id, score');
+
+  const quizCounts = {};
+  (scoreSummary||[]).forEach(s => { quizCounts[s.user_id] = (quizCounts[s.user_id]||0)+1; });
+
+  el.innerHTML = `
     <div style="font-weight:800;font-size:20px;color:var(--primary);margin-bottom:14px">🏆 Global Leaderboard</div>
     <div class="card" style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead><tr style="background:#e8f5e9">
-          ${['Rank','Name','Email','Total Score','Quizzes','Avg/Quiz','Progress'].map(h=>`<th style="padding:11px 8px;text-align:left;font-weight:700;color:var(--primary)">${h}</th>`).join('')}
+          ${['Rank','Name','Email','Total Score','Quizzes','Avg/Quiz','Joined'].map(h=>`<th style="padding:11px 8px;text-align:left;font-weight:700;color:var(--primary)">${h}</th>`).join('')}
         </tr></thead>
-        <tbody>${lb.map((u,i)=>`
-          <tr style="background:${i%2===0?'#fff':'#f9fffe'};border-bottom:1px solid var(--border)">
-            <td style="padding:11px 8px"><div style="width:30px;height:30px;border-radius:50%;background:${i===0?'#F9A825':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--border)'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:${i<3?'var(--brown)':'var(--muted)'}">#${i+1}</div></td>
+        <tbody>${(lb||[]).map((u,i)=>{
+          const qc = quizCounts[u.id]||0;
+          return `<tr style="background:${i%2===0?'#fff':'#f9fffe'};border-bottom:1px solid var(--border)">
+            <td style="padding:11px 8px"><div style="width:30px;height:30px;border-radius:50%;background:${i===0?'#F9A825':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--border)'};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">#${i+1}</div></td>
             <td style="padding:11px 8px;font-weight:700">${u.name}</td>
             <td style="padding:11px 8px;color:var(--muted)">${u.email}</td>
-            <td style="padding:11px 8px"><div style="font-weight:800;color:var(--primary);font-size:16px">${u.totalScore.toLocaleString()}</div><div style="height:5px;background:#e8f5e9;border-radius:3px;margin-top:4px;width:120px"><div style="width:${Math.round((u.totalScore/(lb[0]?.totalScore||1))*100)}%;height:100%;background:${i===0?'#F9A825':'var(--primary)'};border-radius:3px"></div></div></td>
-            <td style="padding:11px 8px">${u.scores.length}</td>
-            <td style="padding:11px 8px">${u.scores.length>0?Math.round(u.totalScore/u.scores.length).toLocaleString():0}</td>
-            <td style="padding:11px 8px"><span class="badge" style="background:#e8f5e9;color:var(--success)">Active</span></td>
-          </tr>`).join('')}
+            <td style="padding:11px 8px"><div style="font-weight:800;color:var(--primary);font-size:16px">${(u.total_score||0).toLocaleString()}</div></td>
+            <td style="padding:11px 8px">${qc}</td>
+            <td style="padding:11px 8px">${qc>0?Math.round((u.total_score||0)/qc).toLocaleString():0}</td>
+            <td style="padding:11px 8px;color:var(--muted)">${u.join_date||'—'}</td>
+          </tr>`;}).join('')}
         </tbody>
       </table>
     </div>`;
 }
 
-function renderAdminReports() {
-  const lb=getLeaderboard(), app=getApproved();
-  document.getElementById('a-reports').innerHTML=`
+async function renderAdminReports(){
+  const el = document.getElementById('a-reports');
+  el.innerHTML = loadingHtml('Loading reports...');
+  const [{ data: users }, { data: quizzes }, { data: scores }] = await Promise.all([
+    db.from('profiles').select('id,name,email,total_score,join_date').eq('role','contestant').eq('status','approved').order('total_score',{ascending:false}),
+    db.from('quizzes').select('id,name'),
+    db.from('scores').select('user_id,quiz_name,score')
+  ]);
+
+  el.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
       <div style="font-weight:800;font-size:20px;color:var(--primary)">📊 Performance Reports</div>
       <button class="gbtn" onclick="exportPerformance()" style="padding:10px 20px;font-size:14px;background:var(--primary)">⬇️ Download Full CSV</button>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:18px">
-      <div class="card" style="text-align:center">
-        <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">📊 Engagement Meters</div>
-        <div style="display:flex;justify-content:space-around">
-          ${makeSpeedo(app.filter(u=>u.totalScore>1500).length,Math.max(app.length,1),'Top Scorers','#F9A825')}
-          ${makeSpeedo(app.filter(u=>u.scores.length>1).length,Math.max(app.length,1),'Repeat Players','var(--primary)')}
-        </div>
-      </div>
-      <div class="card">
-        <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:10px">📈 Quiz Avg Scores</div>
-        ${quizzes.map(q=>{const sc=app.flatMap(u=>u.scores.filter(s=>s.quiz===q.name).map(s=>s.score));const avg=sc.length>0?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):0;return`
-          <div style="margin-bottom:12px">
-            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
-              <span style="font-weight:600">${q.name.substring(0,26)}…</span><span style="color:var(--primary);font-weight:700">${avg}</span>
-            </div>
-            <div style="height:7px;background:#e8f5e9;border-radius:4px"><div style="width:${Math.round(avg/1500*100)}%;height:100%;background:var(--secondary);border-radius:4px"></div></div>
-          </div>`;}).join('')}
-      </div>
     </div>
     <div class="card" style="overflow-x:auto">
       <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">Full Contestant Report</div>
@@ -1119,24 +995,37 @@ function renderAdminReports() {
         <thead><tr style="background:#e8f5e9">
           ${['Rank','Name','Email','Total Score','Quizzes','Avg/Quiz','Joined'].map(h=>`<th style="padding:10px 8px;text-align:left;font-weight:700;color:var(--primary)">${h}</th>`).join('')}
         </tr></thead>
-        <tbody>${lb.map((u,i)=>`
-          <tr style="background:${i%2===0?'#fff':'#f9fffe'};border-bottom:1px solid var(--border)">
+        <tbody>${(users||[]).map((u,i)=>{
+          const sc=(scores||[]).filter(s=>s.user_id===u.id);
+          return `<tr style="background:${i%2===0?'#fff':'#f9fffe'};border-bottom:1px solid var(--border)">
             <td style="padding:10px 8px;font-weight:800;color:${i===0?'#F9A825':'var(--primary)'}">#${i+1}</td>
             <td style="padding:10px 8px;font-weight:600">${u.name}</td>
             <td style="padding:10px 8px;color:var(--muted)">${u.email}</td>
-            <td style="padding:10px 8px;font-weight:700;color:var(--primary)">${u.totalScore.toLocaleString()}</td>
-            <td style="padding:10px 8px">${u.scores.length}</td>
-            <td style="padding:10px 8px">${u.scores.length>0?Math.round(u.totalScore/u.scores.length).toLocaleString():0}</td>
-            <td style="padding:10px 8px;color:var(--muted)">${u.joinDate}</td>
-          </tr>`).join('')}
+            <td style="padding:10px 8px;font-weight:700;color:var(--primary)">${(u.total_score||0).toLocaleString()}</td>
+            <td style="padding:10px 8px">${sc.length}</td>
+            <td style="padding:10px 8px">${sc.length>0?Math.round((u.total_score||0)/sc.length).toLocaleString():0}</td>
+            <td style="padding:10px 8px;color:var(--muted)">${u.join_date||'—'}</td>
+          </tr>`;}).join('')}
         </tbody>
       </table>
     </div>`;
+
+  window._reportUsers = users || [];
+  window._reportScores = scores || [];
 }
 
-function renderAdminBank() {
-  const lb = getLeaderboard();
-  document.getElementById('a-bank').innerHTML=`
+async function renderAdminBank(){
+  const el = document.getElementById('a-bank');
+  el.innerHTML = loadingHtml('Loading bank data...');
+  const { data: lb } = await db
+    .from('profiles')
+    .select('id,name,email,total_score,bank_account_name,bank_name,bank_account_number')
+    .eq('role','contestant').eq('status','approved')
+    .order('total_score',{ascending:false});
+
+  window._bankData = lb || [];
+
+  el.innerHTML = `
     <div style="font-weight:800;font-size:20px;color:var(--primary);margin-bottom:6px">💳 Bank Account Export</div>
     <div style="font-size:14px;color:var(--muted);margin-bottom:18px">Export bank details for prize disbursement. Ranked by total score.</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px">
@@ -1144,103 +1033,72 @@ function renderAdminBank() {
         <div class="card" style="text-align:center;border-top:4px solid ${color};cursor:pointer" onclick="exportBank(${n})">
           <div style="font-size:26px;margin-bottom:6px">⬇️</div>
           <div style="font-weight:700;font-size:14px;color:${color}">${label}</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:3px">${n?Math.min(n,lb.length):lb.length} accounts</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">${n?Math.min(n,(lb||[]).length):(lb||[]).length} accounts</div>
           <span class="badge" style="background:${color}22;color:${color};margin-top:8px;display:inline-block">Download CSV</span>
         </div>`).join('')}
     </div>
-    <div class="card" style="margin-bottom:18px">
-      <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">Custom Export</div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <input type="number" id="topn" value="50" min="1" max="${lb.length}" style="width:90px"/>
-        <span style="font-size:14px;color:var(--muted)">top contestants</span>
-        <button class="gbtn" onclick="exportBank(+document.getElementById('topn').value)" style="padding:9px 18px;font-size:13px;background:#6A1B9A">⬇️ Export Custom</button>
-      </div>
-    </div>
     <div class="card" style="overflow-x:auto">
-      <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">Account Preview (Top ${Math.min(5,lb.length)})</div>
+      <div style="font-weight:700;font-size:15px;color:var(--primary);margin-bottom:12px">Account Preview (Top ${Math.min(5,(lb||[]).length)})</div>
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead><tr style="background:#e8f5e9">
           ${['Rank','Name','Account Name','Bank','Account No.','Score'].map(h=>`<th style="padding:10px 8px;text-align:left;font-weight:700;color:var(--primary)">${h}</th>`).join('')}
         </tr></thead>
-        <tbody>${lb.slice(0,5).map((u,i)=>`
+        <tbody>${(lb||[]).slice(0,5).map((u,i)=>`
           <tr style="background:${i%2===0?'#fff':'#f9fffe'};border-bottom:1px solid var(--border)">
             <td style="padding:10px 8px;font-weight:800;color:${i===0?'#F9A825':'var(--primary)'}">#${i+1}</td>
             <td style="padding:10px 8px;font-weight:600">${u.name}</td>
-            <td style="padding:10px 8px">${u.bank.name||'—'}</td>
-            <td style="padding:10px 8px">${u.bank.bankName||'—'}</td>
-            <td style="padding:10px 8px;font-family:monospace">${u.bank.accountNumber||'—'}</td>
-            <td style="padding:10px 8px;font-weight:700;color:var(--primary)">${u.totalScore.toLocaleString()}</td>
+            <td style="padding:10px 8px">${u.bank_account_name||'—'}</td>
+            <td style="padding:10px 8px">${u.bank_name||'—'}</td>
+            <td style="padding:10px 8px;font-family:monospace">${u.bank_account_number||'—'}</td>
+            <td style="padding:10px 8px;font-weight:700;color:var(--primary)">${(u.total_score||0).toLocaleString()}</td>
           </tr>`).join('')}
         </tbody>
       </table>
     </div>`;
 }
 
-// =========================================================
-// ==================== CSV EXPORTS ========================
-// =========================================================
-function exportCSV(data, filename) {
+// ============================================================
+// CSV EXPORTS
+// ============================================================
+function exportCSV(data, filename){
+  if (!data?.length) return notify('No data to export', 'warning');
   const keys = Object.keys(data[0]);
   const rows = [keys.join(','), ...data.map(row=>keys.map(k=>`"${String(row[k]||'').replace(/"/g,'""')}"`).join(','))];
-  const blob = new Blob([rows.join('\n')], {type:'text/csv'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a'); a.href=url; a.download=filename; a.click();
+  const blob = new Blob([rows.join('\n')], { type:'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
   notify('CSV downloaded! ✓');
 }
-
-function exportPerformance() {
-  const lb = getLeaderboard();
-  exportCSV(lb.map((u,i)=>({Rank:i+1,Name:u.name,Email:u.email,Phone:u.phone,TotalScore:u.totalScore,QuizzesTaken:u.scores.length,AvgScore:u.scores.length>0?Math.round(u.totalScore/u.scores.length):0,JoinDate:u.joinDate,BankName:u.bank.bankName})),'lmtw_performance_report.csv');
+async function exportPerformance(){
+  const { data: users } = await db
+    .from('profiles').select('id,name,email,phone,total_score,join_date,bank_name')
+    .eq('role','contestant').eq('status','approved').order('total_score',{ascending:false});
+  const { data: scores } = await db.from('scores').select('user_id');
+  const qc = {};
+  (scores||[]).forEach(s=>{ qc[s.user_id]=(qc[s.user_id]||0)+1; });
+  exportCSV((users||[]).map((u,i)=>({
+    Rank:i+1, Name:u.name, Email:u.email, Phone:u.phone||'',
+    TotalScore:u.total_score||0, QuizzesTaken:qc[u.id]||0,
+    AvgScore:qc[u.id]>0?Math.round((u.total_score||0)/qc[u.id]):0,
+    JoinDate:u.join_date||'', BankName:u.bank_name||''
+  })), 'lmtw_performance_report.csv');
 }
-
-function exportBank(n) {
-  const lb = getLeaderboard();
+function exportBank(n){
+  const lb = window._bankData || [];
   const target = n ? lb.slice(0,n) : lb;
-  exportCSV(target.map((u,i)=>({Rank:i+1,AccountName:u.bank.name,BankName:u.bank.bankName,AccountNumber:u.bank.accountNumber,ContestantName:u.name,Email:u.email,TotalScore:u.totalScore})),`lmtw_bank_details_top${n||'all'}.csv`);
+  exportCSV(target.map((u,i)=>({
+    Rank:i+1, AccountName:u.bank_account_name||'', BankName:u.bank_name||'',
+    AccountNumber:u.bank_account_number||'', ContestantName:u.name,
+    Email:u.email, TotalScore:u.total_score||0
+  })), `lmtw_bank_top${n||'all'}.csv`);
 }
 
-// =========================================================
-// =================== KEYBOARD ============================
-// =========================================================
-document.getElementById('li-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
-document.addEventListener('keydown', e=>{ if(e.key==='Enter'&&document.getElementById('s-forgot').classList.contains('active')) doForgotPassword(); });
-document.addEventListener('keydown', e=>{ if(e.key==='Enter'&&document.getElementById('s-reset').classList.contains('active')) doResetPassword(); });
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.getElementById('li-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('li-email').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('li-pass').focus(); });
 </script>
-
-<!-- =========================================================
-     SUPABASE SETUP INSTRUCTIONS (read and delete this comment)
-     =========================================================
-     1. Go to https://supabase.com/dashboard → your project → Settings → API
-     2. Replace SUPABASE_URL and SUPABASE_ANON at the top of the <script> block.
-
-     3. In Supabase, go to Table Editor and create a table called "profiles" with these columns:
-        - id          uuid  (Primary Key, references auth.users.id)
-        - name        text
-        - email       text
-        - phone       text
-        - role        text  default 'contestant'
-        - status      text  default 'pending'
-        - flagged     bool  default false
-        - bank_account_name  text
-        - bank_name          text
-        - account_number     text
-        - scores      jsonb default '[]'
-        - total_score int   default 0
-        - created_at  timestamptz default now()
-
-     4. In Supabase, go to Authentication → Email Templates → Recovery
-        Make sure the redirect URL points to your hosted page URL.
-        Also go to Authentication → URL Configuration → add your site URL to "Redirect URLs".
-
-     5. For the admin account: register normally via the app, then manually update
-        that user's "role" to "admin" and "status" to "approved" in the profiles table.
-
-     6. Row Level Security (RLS) — recommended policies:
-        - profiles: allow SELECT for authenticated users (for leaderboard)
-        - profiles: allow UPDATE for own row only (id = auth.uid())
-        - profiles: allow INSERT for authenticated users (on registration)
-        - profiles: allow UPDATE for admin role (for approvals) — or disable RLS for admin ops
-
-     ========================================================= -->
 </body>
 </html>
