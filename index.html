@@ -270,8 +270,8 @@ tr:hover{background:#f0fff4!important}
 // =========================================================
 // ⚠️  REPLACE THESE with your actual Supabase project values
 // Found at: https://supabase.com/dashboard → Your Project → Settings → API
-const SUPABASE_URL  = 'https://ummncpnlqaainjlxkpmw.supabase.co/rest/v1/';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtbW5jcG5scWFhaW5qbHhrcG13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTUwNTQsImV4cCI6MjA5NTM5MTA1NH0.ziWHJaRUcSJVVdHPvPRiq1uIPz0eQQYG07BvZSrllLA';
+const SUPABASE_URL  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtbW5jcG5scWFhaW5qbHhrcG13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTUwNTQsImV4cCI6MjA5NTM5MTA1NH0.ziWHJaRUcSJVVdHPvPRiq1uIPz0eQQYG07BvZSrllLA';
+const SUPABASE_ANON = 'YOUR_ANON_PUBLIC_KEY';
 
 // =========================================================
 // =================== SUPABASE CLIENT =====================
@@ -566,8 +566,7 @@ async function doForgotPassword() {
   if (!email) return notify("Please enter your email.", "error");
 
   setBtnLoading('fp-btn', true);
-  // redirectTo must be the URL of this page so the recovery token lands here
-  const redirectTo = window.location.href.split('#')[0].split('?')[0];
+  const redirectTo = 'https://smallvilleinfotech-art.github.io/LEAD-ME-TO-THE-WATERS/';
   const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
   setBtnLoading('fp-btn', false, 'Send Recovery Email 📧');
 
