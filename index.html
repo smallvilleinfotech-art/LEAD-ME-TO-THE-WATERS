@@ -330,14 +330,22 @@ async function loadUserProfile(userId){
 // AUTH ACTIONS
 // ============================================================
 async function doLogin(){
+  if (SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+    return showAlert('landing-alert', '⚙️ App not configured yet. Add your Supabase anon key to index.html line 2.');
+  }
   const email = document.getElementById('li-email').value.trim();
   const pass  = document.getElementById('li-pass').value;
   if (!email || !pass) return showAlert('landing-alert','Please enter your email and password.');
   hideAlert('landing-alert');
   setLoading('login-btn', true, 'Sign In →');
-  const { error } = await db.auth.signInWithPassword({ email, password: pass });
-  setLoading('login-btn', false, 'Sign In →');
-  if (error) showAlert('landing-alert', error.message);
+  try {
+    const { error } = await db.auth.signInWithPassword({ email, password: pass });
+    if (error) showAlert('landing-alert', error.message);
+  } catch(e) {
+    showAlert('landing-alert', 'Connection error: ' + e.message);
+  } finally {
+    setLoading('login-btn', false, 'Sign In →');
+  }
 }
 
 async function doLogout(){
@@ -347,6 +355,9 @@ async function doLogout(){
 }
 
 async function doRegister(){
+  if (SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+    return notify('App not configured yet. Add your Supabase anon key.', 'error');
+  }
   const name  = document.getElementById('rg-name').value.trim();
   const email = document.getElementById('rg-email').value.trim();
   const pass  = document.getElementById('rg-pass').value;
@@ -359,57 +370,52 @@ async function doRegister(){
     return notify('Please fill all fields', 'error');
 
   setLoading('reg-btn', true, 'Register Now 🙏');
+  try {
+    // 1. Check if email already exists in profiles
+    const { data: existing } = await db
+      .from('profiles').select('id').eq('email', email).maybeSingle();
+    if (existing) {
+      await db.from('profiles').update({ flagged: true }).eq('email', email);
+      return notify('⚠️ Email already registered. Admin notified.', 'error');
+    }
 
-  // 1. Check if email already exists in profiles
-  const { data: existing } = await db
-    .from('profiles').select('id').eq('email', email).maybeSingle();
-  if (existing) {
-    // Flag the duplicate attempt by updating flagged=true on existing row
-    await db.from('profiles').update({ flagged: true }).eq('email', email);
+    // 2. Create Supabase Auth user
+    const { data: authData, error: authErr } = await db.auth.signUp({ email, password: pass });
+    if (authErr) return notify(authErr.message, 'error');
+
+    const userId = authData.user?.id;
+    if (!userId) return notify('Registration failed. Try again.', 'error');
+
+    // 3. Insert profile row
+    const { error: profileErr } = await db.from('profiles').insert({
+      id: userId,
+      name,
+      email,
+      phone,
+      role: 'contestant',
+      status: 'pending',
+      total_score: 0,
+      join_date: new Date().toISOString().split('T')[0],
+      flagged: false,
+      bank_account_name: bname,
+      bank_name: bank,
+      bank_account_number: acct
+    });
+
+    if (profileErr) {
+      console.error('Profile insert error:', profileErr);
+      return notify('Account created but profile setup failed. Contact admin.', 'error');
+    }
+
+    // Sign out immediately — need admin approval first
+    await db.auth.signOut();
+    notify('Registration successful! Awaiting admin approval 🎉');
+    goTo('s-landing');
+  } catch(e) {
+    notify('Registration error: ' + e.message, 'error');
+  } finally {
     setLoading('reg-btn', false, 'Register Now 🙏');
-    return notify('⚠️ Email already registered. Admin notified.', 'error');
   }
-
-  // 2. Create Supabase Auth user
-  const { data: authData, error: authErr } = await db.auth.signUp({ email, password: pass });
-  if (authErr) {
-    setLoading('reg-btn', false, 'Register Now 🙏');
-    return notify(authErr.message, 'error');
-  }
-
-  const userId = authData.user?.id;
-  if (!userId) {
-    setLoading('reg-btn', false, 'Register Now 🙏');
-    return notify('Registration failed. Try again.', 'error');
-  }
-
-  // 3. Insert profile row
-  const { error: profileErr } = await db.from('profiles').insert({
-    id: userId,
-    name,
-    email,
-    phone,
-    role: 'contestant',
-    status: 'pending',
-    total_score: 0,
-    join_date: new Date().toISOString().split('T')[0],
-    flagged: false,
-    bank_account_name: bname,
-    bank_name: bank,
-    bank_account_number: acct
-  });
-
-  setLoading('reg-btn', false, 'Register Now 🙏');
-
-  if (profileErr) {
-    console.error('Profile insert error:', profileErr);
-    return notify('Account created but profile setup failed. Contact admin.', 'error');
-  }
-
-  // Sign out immediately — need admin approval first
-  await db.auth.signOut();
-  notify('Registration successful! Awaiting admin approval 🎉');
-  goTo('s-landing');
 }
 
 function showForgotPassword(){
